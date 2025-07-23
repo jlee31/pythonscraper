@@ -22,24 +22,28 @@ for page in range(1, pages+1):
     doc = BeautifulSoup(page, "html.parser")
 
     div = doc.find(class_="list-wrap")
-    items = div.find_all(text=re.compile(product))
+    items = div.find_all(string=re.compile(product))
+
     
     for item in items:
         parent = item.parent
         if parent.name != 'a':
             continue
         link = parent['href']
-        next_parent = item.find_parent(class_="item_container")
-        price = next_parent.find(class_="price-current").strong.string
-
-        items_found[item] = {"price": int(price.replace(",","")), "link": link}
+        next_parent = item.find_parent("div", class_=re.compile("item-cell"))
+        try:
+            price = next_parent.find(class_="price-current").strong.string
+            items_found[item] = {"price": int(price.replace(",","")), "link": link}
+        except:
+            pass
 
 # print(items_found)
 
-sorted_items = sorted(items_found.items(), lambda x: x[1]['price'])
+sorted_items = sorted(items_found.items(), key=lambda x: x[1]['price'])
 
 for item in sorted_items:
     print(item[0]) # name
     print(f"{item[1]['price']}") # price 
-    print(item[1][link]) # link of item
+    print(item[1]['link']) # link of item
+    print(' _______________________________________')
 
