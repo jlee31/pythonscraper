@@ -32,6 +32,14 @@ for page in range(1, pages+1):
         next_parent = item.find_parent(class_="item_container")
         price = next_parent.find(class_="price-current").strong.string
 
-        items_found[item] = {"price": price, "link": link}
+        items_found[item] = {"price": int(price.replace(",","")), "link": link}
 
-print(items_found)
+# print(items_found)
+
+sorted_items = sorted(items_found.items(), lambda x: x[1]['price'])
+
+for item in sorted_items:
+    print(item[0]) # name
+    print(f"{item[1]['price']}") # price 
+    print(item[1][link]) # link of item
+
